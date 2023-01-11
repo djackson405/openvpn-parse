@@ -1,6 +1,18 @@
 const fs = require('fs');
 const readline = require('readline');
 
+function formatBytes(bytes, decimals = 2) {
+  if (!+bytes) return '0 Bytes'
+
+  const k = 1024
+  const dm = decimals < 0 ? 0 : decimals
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+}
+
 
 function removePort(str) {
   return str.replace(/:\d+$/, '');
@@ -37,8 +49,8 @@ async function parseLog(statusLogPath) {
           clientList.push({
             commonName,
             realAddress,
-            bytesReceived: parseInt(bytesReceived, 10),
-            bytesSent: parseInt(bytesSent, 10),
+            bytesReceived:formatBytes(parseInt(bytesReceived, 10)),
+            bytesSent: formatBytes(parseInt(bytesSent, 10)),
             connectedSince
           });
         }
